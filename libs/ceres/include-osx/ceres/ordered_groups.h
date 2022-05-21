@@ -36,7 +36,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "ceres/internal/export.h"
+#include "ceres/internal/port.h"
 #include "glog/logging.h"
 
 namespace ceres {
@@ -190,7 +190,7 @@ class OrderedGroups {
 };
 
 // Typedef for the most commonly used version of OrderedGroups.
-using ParameterBlockOrdering = OrderedGroups<double*>;
+typedef OrderedGroups<double*> ParameterBlockOrdering;
 
 }  // namespace ceres
 

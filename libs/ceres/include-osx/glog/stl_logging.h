@@ -59,7 +59,7 @@
 #include <utility>
 #include <vector>
 
-#if defined(GLOG_STL_LOGGING_FOR_UNORDERED) && __cplusplus >= 201103L
+#ifdef GLOG_STL_LOGGING_FOR_UNORDERED
 # include <unordered_map>
 # include <unordered_set>
 #endif
@@ -130,7 +130,7 @@ inline std::ostream& operator<<(std::ostream& out, \
 
 OUTPUT_FOUR_ARG_CONTAINER(std::map)
 OUTPUT_FOUR_ARG_CONTAINER(std::multimap)
-#if defined(GLOG_STL_LOGGING_FOR_UNORDERED) && __cplusplus >= 201103L
+#ifdef GLOG_STL_LOGGING_FOR_UNORDERED
 OUTPUT_FOUR_ARG_CONTAINER(std::unordered_set)
 OUTPUT_FOUR_ARG_CONTAINER(std::unordered_multiset)
 #endif
@@ -153,7 +153,7 @@ inline std::ostream& operator<<(std::ostream& out, \
   return out; \
 }
 
-#if defined(GLOG_STL_LOGGING_FOR_UNORDERED) && __cplusplus >= 201103L
+#ifdef GLOG_STL_LOGGING_FOR_UNORDERED
 OUTPUT_FIVE_ARG_CONTAINER(std::unordered_map)
 OUTPUT_FIVE_ARG_CONTAINER(std::unordered_multimap)
 #endif

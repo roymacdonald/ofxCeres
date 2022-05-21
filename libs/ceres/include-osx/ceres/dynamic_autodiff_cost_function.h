@@ -77,17 +77,17 @@ namespace ceres {
 // pass. There is a tradeoff with the size of the passes; you may want
 // to experiment with the stride.
 template <typename CostFunctor, int Stride = 4>
-class DynamicAutoDiffCostFunction final : public DynamicCostFunction {
+class DynamicAutoDiffCostFunction : public DynamicCostFunction {
  public:
   // Takes ownership by default.
-  explicit DynamicAutoDiffCostFunction(CostFunctor* functor,
-                                       Ownership ownership = TAKE_OWNERSHIP)
+  DynamicAutoDiffCostFunction(CostFunctor* functor,
+                              Ownership ownership = TAKE_OWNERSHIP)
       : functor_(functor), ownership_(ownership) {}
 
-  DynamicAutoDiffCostFunction(DynamicAutoDiffCostFunction&& other)
+  explicit DynamicAutoDiffCostFunction(DynamicAutoDiffCostFunction&& other)
       : functor_(std::move(other.functor_)), ownership_(other.ownership_) {}
 
-  ~DynamicAutoDiffCostFunction() override {
+  virtual ~DynamicAutoDiffCostFunction() {
     // Manually release pointer if configured to not take ownership
     // rather than deleting only if ownership is taken.  This is to
     // stay maximally compatible to old user code which may have
@@ -105,7 +105,7 @@ class DynamicAutoDiffCostFunction final : public DynamicCostFunction {
         << "You must call DynamicAutoDiffCostFunction::SetNumResiduals() "
         << "before DynamicAutoDiffCostFunction::Evaluate().";
 
-    if (jacobians == nullptr) {
+    if (jacobians == NULL) {
       return (*functor_)(parameters, residuals);
     }
 
@@ -150,7 +150,7 @@ class DynamicAutoDiffCostFunction final : public DynamicCostFunction {
       jet_parameters[i] = &input_jets[parameter_cursor];
 
       const int parameter_block_size = parameter_block_sizes()[i];
-      if (jacobians[i] != nullptr) {
+      if (jacobians[i] != NULL) {
         if (!in_derivative_section) {
           start_derivative_section.push_back(parameter_cursor);
           in_derivative_section = true;
@@ -209,7 +209,7 @@ class DynamicAutoDiffCostFunction final : public DynamicCostFunction {
               parameter_cursor >=
                   (start_derivative_section[current_derivative_section] +
                    current_derivative_section_cursor)) {
-            if (jacobians[i] != nullptr) {
+            if (jacobians[i] != NULL) {
               input_jets[parameter_cursor].v[active_parameter_count] = 1.0;
               ++active_parameter_count;
               ++current_derivative_section_cursor;
@@ -238,7 +238,7 @@ class DynamicAutoDiffCostFunction final : public DynamicCostFunction {
               parameter_cursor >=
                   (start_derivative_section[current_derivative_section] +
                    current_derivative_section_cursor)) {
-            if (jacobians[i] != nullptr) {
+            if (jacobians[i] != NULL) {
               for (int k = 0; k < num_residuals(); ++k) {
                 jacobians[i][k * parameter_block_sizes()[i] + j] =
                     output_jets[k].v[active_parameter_count];

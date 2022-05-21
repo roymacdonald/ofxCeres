@@ -37,10 +37,8 @@
 #include <vector>
 
 #include "ceres/dynamic_cost_function.h"
-#include "ceres/internal/disable_warnings.h"
-#include "ceres/internal/export.h"
 #include "ceres/internal/fixed_array.h"
-#include "glog/logging.h"
+#include "ceres/internal/port.h"
 
 namespace ceres {
 
@@ -102,7 +100,7 @@ namespace ceres {
 //  private:
 //   DynamicCostFunctionToFunctor intrinsic_projection_;
 // };
-class CERES_EXPORT DynamicCostFunctionToFunctor {
+class DynamicCostFunctionToFunctor {
  public:
   // Takes ownership of cost_function.
   explicit DynamicCostFunctionToFunctor(CostFunction* cost_function)
@@ -111,7 +109,7 @@ class CERES_EXPORT DynamicCostFunctionToFunctor {
   }
 
   bool operator()(double const* const* parameters, double* residuals) const {
-    return cost_function_->Evaluate(parameters, residuals, nullptr);
+    return cost_function_->Evaluate(parameters, residuals, NULL);
   }
 
   template <typename JetT>
@@ -188,7 +186,5 @@ class CERES_EXPORT DynamicCostFunctionToFunctor {
 };
 
 }  // namespace ceres
-
-#include "ceres/internal/reenable_warnings.h"
 
 #endif  // CERES_PUBLIC_DYNAMIC_COST_FUNCTION_TO_FUNCTOR_H_

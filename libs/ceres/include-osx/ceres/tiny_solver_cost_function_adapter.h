@@ -75,7 +75,7 @@ template <int kNumResiduals = Eigen::Dynamic,
           int kNumParameters = Eigen::Dynamic>
 class TinySolverCostFunctionAdapter {
  public:
-  using Scalar = double;
+  typedef double Scalar;
   enum ComponentSizeType {
     NUM_PARAMETERS = kNumParameters,
     NUM_RESIDUALS = kNumResiduals
@@ -85,7 +85,7 @@ class TinySolverCostFunctionAdapter {
   // fixed-size Eigen types.
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  explicit TinySolverCostFunctionAdapter(const CostFunction& cost_function)
+  TinySolverCostFunctionAdapter(const CostFunction& cost_function)
       : cost_function_(cost_function) {
     CHECK_EQ(cost_function_.parameter_block_sizes().size(), 1)
         << "Only CostFunctions with exactly one parameter blocks are allowed.";
@@ -108,7 +108,7 @@ class TinySolverCostFunctionAdapter {
                   double* residuals,
                   double* jacobian) const {
     if (!jacobian) {
-      return cost_function_.Evaluate(&parameters, residuals, nullptr);
+      return cost_function_.Evaluate(&parameters, residuals, NULL);
     }
 
     double* jacobians[1] = {row_major_jacobian_.data()};

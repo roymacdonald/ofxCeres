@@ -77,7 +77,7 @@ namespace ceres {
 //   cost_function.AddParameterBlock(10);
 //   cost_function.SetNumResiduals(21);
 template <typename CostFunctor, NumericDiffMethodType method = CENTRAL>
-class DynamicNumericDiffCostFunction final : public DynamicCostFunction {
+class DynamicNumericDiffCostFunction : public DynamicCostFunction {
  public:
   explicit DynamicNumericDiffCostFunction(
       const CostFunctor* functor,
@@ -85,10 +85,11 @@ class DynamicNumericDiffCostFunction final : public DynamicCostFunction {
       const NumericDiffOptions& options = NumericDiffOptions())
       : functor_(functor), ownership_(ownership), options_(options) {}
 
-  DynamicNumericDiffCostFunction(DynamicNumericDiffCostFunction&& other)
+  explicit DynamicNumericDiffCostFunction(
+      DynamicNumericDiffCostFunction&& other)
       : functor_(std::move(other.functor_)), ownership_(other.ownership_) {}
 
-  ~DynamicNumericDiffCostFunction() override {
+  virtual ~DynamicNumericDiffCostFunction() {
     if (ownership_ != TAKE_OWNERSHIP) {
       functor_.release();
     }
@@ -110,7 +111,7 @@ class DynamicNumericDiffCostFunction final : public DynamicCostFunction {
     const bool status =
         internal::VariadicEvaluate<internal::DynamicParameterDims>(
             *functor_.get(), parameters, residuals);
-    if (jacobians == nullptr || !status) {
+    if (jacobians == NULL || !status) {
       return status;
     }
 
@@ -132,7 +133,7 @@ class DynamicNumericDiffCostFunction final : public DynamicCostFunction {
     }
 
     for (size_t block = 0; block < block_sizes.size(); ++block) {
-      if (jacobians[block] != nullptr &&
+      if (jacobians[block] != NULL &&
           !NumericDiff<CostFunctor,
                        method,
                        ceres::DYNAMIC,

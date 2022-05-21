@@ -40,10 +40,6 @@
 
 namespace ceres {
 
-// WARNING: LocalParameterizations are deprecated, so is
-// AutoDiffLocalParameterization. They will be removed from Ceres Solver in
-// version 2.2.0. Please use Manifolds and AutoDiffManifold instead.
-
 // Create local parameterization with Jacobians computed via automatic
 // differentiation. For more information on local parameterizations,
 // see include/ceres/local_parameterization.h
@@ -110,8 +106,7 @@ namespace ceres {
 // seen where instead of using k_ directly, k_ is wrapped with T(k_).
 
 template <typename Functor, int kGlobalSize, int kLocalSize>
-class CERES_DEPRECATED_WITH_MSG("Use AutoDiffManifold instead.")
-    AutoDiffLocalParameterization : public LocalParameterization {
+class AutoDiffLocalParameterization : public LocalParameterization {
  public:
   AutoDiffLocalParameterization() : functor_(new Functor()) {}
 
@@ -119,6 +114,7 @@ class CERES_DEPRECATED_WITH_MSG("Use AutoDiffManifold instead.")
   explicit AutoDiffLocalParameterization(Functor* functor)
       : functor_(functor) {}
 
+  virtual ~AutoDiffLocalParameterization() {}
   bool Plus(const double* x,
             const double* delta,
             double* x_plus_delta) const override {
@@ -137,7 +133,7 @@ class CERES_DEPRECATED_WITH_MSG("Use AutoDiffManifold instead.")
     }
 
     const double* parameter_ptrs[2] = {x, zero_delta};
-    double* jacobian_ptrs[2] = {nullptr, jacobian};
+    double* jacobian_ptrs[2] = {NULL, jacobian};
     return internal::AutoDifferentiate<
         kGlobalSize,
         internal::StaticParameterDims<kGlobalSize, kLocalSize>>(
@@ -146,8 +142,6 @@ class CERES_DEPRECATED_WITH_MSG("Use AutoDiffManifold instead.")
 
   int GlobalSize() const override { return kGlobalSize; }
   int LocalSize() const override { return kLocalSize; }
-
-  const Functor& functor() const { return *functor_; }
 
  private:
   std::unique_ptr<Functor> functor_;
